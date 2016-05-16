@@ -341,6 +341,14 @@ output the color from the shader.
 
 ## Final Product
 
+some screencaptures:
+
+![Img 01](img/img_01.png)
+
+![Img 02](img/img_02.png)
+
+[Downloadable Video](https://github.com/Jasper2-0/NMNT-Lab-2/blob/master/vid/nmnt_lab_2.mov?raw=true)
+
 ## References
 
 [Raymarching Distance Fields](http://9bitscience.blogspot.nl/2013/07/raymarching-distance-fields_14.html)
