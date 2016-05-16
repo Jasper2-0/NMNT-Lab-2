@@ -107,7 +107,9 @@ With all of that out of the way, let’s have a look at the draw() function, sin
          * move my OSC inputs into the shader
          */
         shader.setUniform1f("c0", c0);
+
 …
+
         shader.setUniform1f("c15", c15);
         
         /*
