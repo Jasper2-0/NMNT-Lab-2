@@ -17,6 +17,21 @@ For this assignment I experimented with raymarching signed distance fields. A me
 
 For people not wel versed in coder-geek speak; A fancy screensaver with tunnels and pretty colors. 
 
+### Raymarching Signed Distance Fields
+
+Raymarching is a technique that has gained quite some popularity with graphics enthouisast programmers (read; demoscene coders) for its simplicity and its speed. 
+
+Imagine you and your monitor being placed into a virtual world. The eye is looking at the monitor (a rectangle), we'll name this rectangle the 'image plane'. By casting rays from the eye to the image plane, we can determine the direction of each ray. With its direction, we march along the ray (hence the term raymarching), in discrete steps. Every step, we check if we're close enough to a surface. This is done by evaluating a distance function. The distnace function returns a distance with is _signed_ (negative or positive) depending on whether we're inside, or outside the object. 
+
+Many of these distance functions were collected by Inigo Quilez, and can be found [here](http://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm). 
+
+Distance functions can not only be used to define primitive objets, but also: 
+
+- operations on these object (union, subtraction, intersection)
+- domain operations (repetition, rotation, scaling)
+- deformations (displacements, blends and twists)
+
+In order to limit my exposure to all different options, I limited myself to spheres, subtractions and repetitions, as those in combination were already complex enough to wrap my head around.
 
 ## How was it created?
 
@@ -210,12 +225,12 @@ We define a speed by multiplying with the current time
 
 ##### Let's figure out where we are...
 
-    float p_x= cos(PI + speed*0.25);
-    float p_y= -0.2;
-    float p_z= 2+speed*0.5;
+    float plane_x= cos(PI + speed*0.25);
+    float plane_y= -0.2;
+    float plane_z= 2+speed*0.5;
 	
 
-Next, we define a point in space, that changes everyframe since we're using _speed_ as a variable.
+Next, we define a an image plane. We update the position of the image plane on every frame.
 
 ##### A helper for 2D rotations
 
@@ -246,47 +261,88 @@ This is a small utility function for rotating 2D vectors.
     void main()
     {
         vec2 position=(gl_FragCoord.xy/ofResolution.xy);
-        vec2 aspectRatio = vec2(ofResolution.x/ofResolution.y,1.0); // aspect ratio so we're nice and square on every resolution
         vec2 p=-1.0+2.0*position; // limit range to -1 ... +1;
-    
+
+We calculate the position of the current pixel by dividing the Fragment coordinate by the resolution of the OF window. After that we limit the range of those positions between -1 and +1 on both axis.
+
+        vec2 aspectRatio = vec2(ofResolution.x/ofResolution.y,1.0); // aspect ratio so we're nice and square on every resolution
+
+We calculate the aspect ratio, by dividing the width by the height (assuming our screen is wider than it's tall). This will help us keep our viewport nicely proportional across different window sizes and resolutions.
+
         vec3 vp=normalize(vec3(p*aspectRatio,0.80)); // screen ratio (x,y) fov (z) (viewport)
-    
+
+Create a normalized rectangle that covers the viewport
+
         vp.xy=rotate(vp.xy,speed*0.5);	// rotate along z
-        
-    
-        vec3 ray=vec3(p_x,py,p_z);
-        
+
+We rotate the viewport along the z axis, makes for a dynamic camera :-)
+
+        vec3 ray=vec3(plane_x,plane_y,plane_z);
+
+Create a ray with the image plane.
+
         float t=0.0;
-        
+
+t steps along the ray
+
         const int ray_n=96;
-        
+
+Here we limit our maximum number of steps
+
         for(int i=0;i<ray_n;i++)
         {
             float k=obj(ray+vp*t);
+
+here we test our ray with our scene (defined as distance functions defined in obj)
+
             if(abs(k)<0.002) break;
+
+If our steps become to small, we step out
+
             t+=k*0.7;
+
+Take a step along the ray
+
         }
         vec3 hit=ray+vp*t;
-        
-        vec2 h=vec2(-0.05,0.05); // light
-        
+
+With our hit surface
+
+        vec2 h=vec2(-0.05,0.05); // light 
+
+create some light
+
         vec3 n=normalize(vec3(obj(hit+h.xyy),obj(hit+h.yxx),obj(hit+h.yyx)));
-        
+
+calculate the surface normal
+
         float c=(n.x+n.y+n.z)*0.08+t*0.16; // shade
-        
+
+shade the object
+
         float color=-0.25*cos(PI*position.x*2.0)+0.25*sin(PI*position.y*4.0);
-        
+
+caculate a radial gradient based on the pixel position
+
         float r = c*1.25-color;
         float g = c*1.25;
         float b = c*1.5+color;
         float a = 1.0;
-        
+
+vary the amounts of red and blue based on the distance from the center.
+
         fragColor=vec4(vec3(r,g,b)*c,a);
-    
+
+output the color from the shader.
+
     }
 
 ## Final Product
 
 ## References
 
+[Raymarching Distance Fields](http://9bitscience.blogspot.nl/2013/07/raymarching-distance-fields_14.html)
 
+[Distance Functions](http://iquilezles.org/www/articles/distfunctions/distfunctions.htm)
+
+Dunn, F., & Parberry, I. (2011). 3D Math Primer for Graphics and Game Development, 2nd Edition. CRC Press.
