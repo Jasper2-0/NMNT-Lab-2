@@ -134,14 +134,22 @@ As you can see, nothing much is happening over here, we’re just drawing a rect
 
 ### Midi-controllers into Open Frameworks
 
-Before we get into the intrecacies of shaders, let's look at how OpenFrameworks works. It's a framework written in C++, which means it gets compiled into machinecode when compiling. This is what gives it it tremendous speed (compared to say Processing, although their OpenGL support has improved over the past few releases). However, it also presents a problem, its compile-view-tweak-compile cycle is notably longer than Processing, and that makes it slow to tweak stuff while you're experimenting.
+Before we get into the intrecacies of shaders, let's look at how OpenFrameworks works. It's a framework written in C++, which means it gets compiled into machinecode when compiling. This is what gives it its speed (compared to say Processing, although their OpenGL support has improved over the past few releases). However, it also presents a problem, its compile-view-tweak-compile cycle is notably longer than Processing, and that makes it slow to tweak stuff while you're experimenting.
 
 In order to have some parameters to tweak, I figured I could use one of my MIDI controllers. I normally use these for tweaking the parameters of soft-synths (VST's), but why wouldn't they be suited for manipulating the values of shaders? 
 
-OpenFrameworks has support  
+OpenFrameworks has support for sending and receiving OSC (Open Sound Control) data thru OfxOSC, so I included that external library when generating the project using the project generation. 
+
+All that was left was to find a way to get my MIDI data into a proper OSC format...  
 
 #### Enter the Osculator
-Osculator is a neat OSX based piece of software that helps with the translation of incoming midi data to 
+Osculator is a neat OSX based piece of software that helps with the translation of incoming midi data to OSC data. It translates incoming midi data of any configured device and allows the user to determine how this data should be pased along as OSC. One of the nicer things about OSC, being a modern protocol that it's not tied to 7 bits of data like MIDI is, this means that controller data is from my MIDI controller as a normalized value (between 0 and 1), which makes it convenient to control paramters with.
+
+
+#### OSC into OpenFrameworks
+I used a Novation Launchcontrol as my midicontroller. It has 16 knobs that output midi CC values as well as 8 push pads and several control buttons. All midi assignments can be re-assigned thru provided software, but as I was only using the 16 knobs, I stayed with their default midi CC values.
+
+With OSC properly set up, it was just a matter of putting OSC data into appropriate float variables that I defined. An array would have also sufficed, but the control data needed to be passed from OF to the shader as well. In this case having a 1 to 1 relation between the OSC message, OF float, and Shaderfloat was a convenient way of setting things up, although you incur a lost of copy-paste code.
 
 ### Vertex Shader
 
