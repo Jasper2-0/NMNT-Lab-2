@@ -82,6 +82,49 @@ A separate function was writen to handle the incoming OSC data.
 
 handleOSC gets OSC messages from the OSC receiver and passes it along to the appropriate variable defined in OF. Quite some copy paste, but it gets the job done.
 
+We’re also watching input on the keyboard. It’s only to get our App to run full-screen, but hey, for thorough documentation:
+
+    void ofApp::keyReleased(int key){
+        switch (key) {
+            case 'f':
+                ofToggleFullscreen();
+                break;
+                
+            default:
+                break;
+        }
+    
+    }
+
+With all of that out of the way, let’s have a look at the draw() function, since people would assume that is where most of the action happens…
+
+    void ofApp::draw(){
+        ofSetColor(255);
+        ofHideCursor();
+        shader.begin();
+        
+        /*
+         * move my OSC inputs into the shader
+         */
+        shader.setUniform1f("c0", c0);
+…
+        shader.setUniform1f("c15", c15);
+        
+        /*
+         * get the OF time into the shader
+         */
+        shader.setUniform1f("ofTime", ofGetElapsedTimef());
+        
+        /*
+         * get the screenResolution into the shader
+         */
+        shader.setUniform2f("ofResolution",ofGetWidth(),ofGetHeight());
+        
+        ofRect(0, 0, ofGetWidth(), ofGetHeight());
+        shader.end();
+    
+    }
+
 
 ### Midi-controllers into Open Frameworks
 
