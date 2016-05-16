@@ -57,7 +57,7 @@ void ofApp::draw(){
      * get the OF time into the shader
      */
     shader.setUniform1f("ofTime", ofGetElapsedTimef());
-    /Users/jasperschelling/Development/xx_muckabout/of_v0.9.3_osx_release/apps/myApps/NMNT/src/main.cpp
+
     /*
      * get the screenResolution into the shader
      */

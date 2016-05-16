@@ -58,7 +58,7 @@ Every update OF handles the incoming data via OSC:
         }
     }
 
-A separate function was writen to handle the incoming OSC data.
+A separate function was written to handle the incoming OSC data.
 
     void ofApp::handleOSC() {
         ofxOscMessage m;
@@ -73,6 +73,7 @@ A separate function was writen to handle the incoming OSC data.
             c0 = m.getArgAsFloat(0);
         }
         
+
 …       
         
         if (m.getAddress() == "/midi/cc48/9") {
@@ -80,7 +81,8 @@ A separate function was writen to handle the incoming OSC data.
         }
     }
 
-handleOSC gets OSC messages from the OSC receiver and passes it along to the appropriate variable defined in OF. Quite some copy paste, but it gets the job done.
+handleOSC gets OSC messages from the OSC receiver and passes it along to the appropriate variable defined in OF. 
+Quite some copy paste, but it gets the job done.
 
 We’re also watching input on the keyboard. It’s only to get our App to run full-screen, but hey, for thorough documentation:
 
@@ -127,8 +129,16 @@ With all of that out of the way, let’s have a look at the draw() function, sin
     
     }
 
+As you can see, nothing much is happening over here, we’re just drawing a rectangle with the size of the screen each frame. However, we _are_ running a shader on that rectangle every frame, see below for more info on how that’s done…
+
 
 ### Midi-controllers into Open Frameworks
+
+Before we get into the intrecacies of shaders, let's look at how OpenFrameworks works. It's a framework written in C++, which means it gets compiled into machinecode when compiling. This is what gives it it tremendous speed (compared to say Processing, although their OpenGL support has improved over the past few releases). However, it also presents a problem, its compile-view-tweak-compile cycle is notably longer than Processing, and that makes it slow to tweak stuff while you're experimenting.
+
+In order to have some parameters to tweak, I figured I could use one of my MIDI controllers. I normally use these for tweaking the parameters of soft-synths (VST's), but why wouldn't they be suited for manipulating the values of shaders? 
+
+OpenFrameworks has support  
 
 #### Enter the Osculator
 Osculator is a neat OSX based piece of software that helps with the translation of incoming midi data to 
