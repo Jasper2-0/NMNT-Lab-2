@@ -47,13 +47,15 @@ The main setup functions takes care of the following housekeeping bits:
 - Sets the framerate to a snappy 60 frames a second
 - Loads the appropriate shader based on TARGET_OPENGLES (different GPU’s use different versions of OpenGL)
 
+Every update OF handles the incoming data via OSC:
+
     void ofApp::update(){
         while(receiver.hasWaitingMessages()) {
             handleOSC();
         }
     }
 
-Every update OF handles the incoming data via OSC
+A separate function was writen to handle the incoming OSC data.
 
     void ofApp::handleOSC() {
         ofxOscMessage m;
