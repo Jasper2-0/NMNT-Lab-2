@@ -143,7 +143,7 @@ OpenFrameworks has support for sending and receiving OSC (Open Sound Control) da
 All that was left was to find a way to get my MIDI data into a proper OSC format...  
 
 #### Enter the Osculator
-Osculator is a neat OSX based piece of software that helps with the translation of incoming midi data to OSC data. It translates incoming midi data of any configured device and allows the user to determine how this data should be pased along as OSC. One of the nicer things about OSC, being a modern protocol that it's not tied to 7 bits of data like MIDI is, this means that controller data is from my MIDI controller as a normalized value (between 0 and 1), which makes it convenient to control paramters with.
+[Osculator](http://www.osculator.net) is a neat OSX based piece of software that helps with the translation of incoming midi data to OSC data. It translates incoming midi data of any configured device and allows the user to determine how this data should be pased along as OSC. One of the nicer things about OSC, being a modern protocol that it's not tied to 7 bits of data like MIDI is, this means that controller data is from my MIDI controller as a normalized value (between 0 and 1), which makes it convenient to control paramters with.
 
 
 #### OSC into OpenFrameworks
