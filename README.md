@@ -15,7 +15,7 @@
 ## What is it?
 For this assignment I experimented with raymarching signed distance fields. A methodology for creating graphics with pixel shaders that run on the GPU of your computer.
 
-For people not wel versed in coder-geek speak; A fancy screensaver with pretty colors and tunnels. 
+For people not wel versed in coder-geek speak; A fancy screensaver with tunnels and pretty colors. 
 
 
 ## How was it created?
@@ -151,10 +151,112 @@ I used a Novation Launchcontrol as my midicontroller. It has 16 knobs that outpu
 
 With OSC properly set up, it was just a matter of putting OSC data into appropriate float variables that I defined. An array would have also sufficed, but the control data needed to be passed from OF to the shader as well. In this case having a 1 to 1 relation between the OSC message, OF float, and Shaderfloat was a convenient way of setting things up, although you incur a lost of copy-paste code.
 
-### Vertex Shader
+Other OF variables getting passed into the shader include the current screen resolution (which we need when writing the fragment shader), as well as the value of the timer (otherwise we wouldn't be able to animate anything in the shader).
 
-### Fragment (pixel) Shader 
+### Shaders
 
+With all of the setup and input of control data out of the way, let's have a look at the part where the actual graphics are created. This is done using 'shaders' Shaders can be thought of a little programs that run on your GPU (Graphic Processing Unit) that determine how your computer draws something. It's important to realize that these shaders are not running on your CPU, and that their API (GLSL) is not part of Open Frameworks. 
+
+Since OF doesn't use a Unified Shader Model, there are two shaders running, a Vertex Shader, that operates on 3D geometry, and a Fragment shader that runs on the 'fragments' (i.e. pixels) of the image that we're generating. 
+
+#### Vertex Shader
+
+    uniform mat4 modelViewProjectionMatrix;
+    
+    in vec4 position;
+    
+    void main(){
+    	gl_Position = modelViewProjectionMatrix * position;
+        
+        
+    }
+
+Our vertex shader takes care of changing the coordinates in 3D space, to 2D space, using the Model View Projection matrix. It outputs these to the fragment shader.
+
+#### Fragment (pixel) Shader 
+The fragment shaders operate on the actual pixels of the image. This is where we do our actual raymarching, and work with signed distance fields. 
+
+#####
+
+    uniform float c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15;
+    
+    uniform float ofTime;
+    uniform vec2 ofResolution;
+    
+    out vec4 fragColor;
+    
+    const float PI=3.14159265358979323846;
+    
+    float speed=ofTime*1.5;
+    
+    float plane_x= cos(PI + speed*0.25);
+    float plane_y= -0.2;
+    float plane_z= 2+speed*0.5;
+    
+    vec2 rotate(vec2 k,float t)
+    {
+        return vec2(cos(t)*k.x-sin(t)*k.y,sin(t)*k.x+cos(t)*k.y);
+    }
+    
+    float obj(vec3 p)
+    {
+        float ball_p=1.0;
+        float ball_w=ball_p*(0.6650-0.075*0.02);
+        float ball=length(mod(p,ball_p)-ball_p*0.5)-ball_w;
+        
+        float hole_w=ball_p*(0.825);
+        float hole=length(mod(p,ball_p)-ball_p*0.5)-hole_w;
+     
+        
+        
+        
+    //    return length(p)-ball_w;
+        
+        return max(-ball,hole);
+        
+    }
+    
+    void main()
+    {
+        vec2 position=(gl_FragCoord.xy/ofResolution.xy);
+        vec2 aspectRatio = vec2(ofResolution.x/ofResolution.y,1.0); // aspect ratio so we're nice and square on every resolution
+        vec2 p=-1.0+2.0*position; // limit range to -1 ... +1;
+    
+        vec3 vp=normalize(vec3(p*aspectRatio,0.80)); // screen ratio (x,y) fov (z) (viewport)
+    
+        vp.xy=rotate(vp.xy,speed*0.5);	// rotate along z
+        
+    
+        vec3 ray=vec3(plane_x,plane_y,plane_z);
+        
+        float t=0.0;
+        
+        const int ray_n=96;
+        
+        for(int i=0;i<ray_n;i++)
+        {
+            float k=obj(ray+vp*t);
+            if(abs(k)<0.002) break;
+            t+=k*0.7;
+        }
+        vec3 hit=ray+vp*t;
+        
+        vec2 h=vec2(-0.05,0.05); // light
+        
+        vec3 n=normalize(vec3(obj(hit+h.xyy),obj(hit+h.yxx),obj(hit+h.yyx)));
+        
+        float c=(n.x+n.y+n.z)*0.08+t*0.16; // shade
+        
+        float color=-0.25*cos(PI*position.x*2.0)+0.25*sin(PI*position.y*4.0);
+        
+        float r = c*1.25-color;
+        float g = c*1.25;
+        float b = c*1.5+color;
+        float a = 1.0;
+        
+        fragColor=vec4(vec3(r,g,b)*c,a);
+    
+    }
 
 ## Final Product
 
