@@ -157,7 +157,9 @@ Other OF variables getting passed into the shader include the current screen res
 
 With all of the setup and input of control data out of the way, let's have a look at the part where the actual graphics are created. This is done using 'shaders' Shaders can be thought of a little programs that run on your GPU (Graphic Processing Unit) that determine how your computer draws something. It's important to realize that these shaders are not running on your CPU, and that their API (GLSL) is not part of Open Frameworks. 
 
-Since OF doesn't use a Unified Shader Model, there are two shaders running, a Vertex Shader, that operates on 3D geometry, and a Fragment shader that runs on the 'fragments' (i.e. pixels) of the image that we're generating. 
+Shaders are also part of WebGL, and as such can run in your browser. The popular website [ShaderToy](http://shadertoy.com) allows you to experiment with shaders in your browser. Please be aware that the site makes _heavy_ use of your GPU, so vistiting it with an onboard GPU instead of a discrete GPU, can seriously hamper the performance of your browser, making your system unresponsive.
+
+Since OF uses Shader Model 3, there are two shaders running, a Vertex Shader, that operates on 3D geometry, and a Fragment shader that runs on the 'fragments' (i.e. pixels) of the image that we're generating. 
 
 #### Vertex Shader
 
@@ -192,25 +194,36 @@ First we define the variables that we get from OF. Keep in mind that these are u
 ##### setting an output
     out vec4 fragColor;
 
-A fragmentshader always has to output a pixelcolor. This color is defined in a 4D vector, where the four dimensions map to a RGBA (32bit) pixel value. They range from 0 to 1 (in contrast to 0.255 that most people are familar with from web design), and an Alpha value, defining the transperacy of the pixel.
+A fragmentshader always has to output a pixelcolor. This color is defined in a 4D vector, where the four dimensions map to a RGBA (32bit) pixel value. They range from 0 to 1 (in contrast to 0...255 that most people are familar with from web design), and an Alpha value, defining the transperacy of the pixel.
 
+##### can has PI?
 
     const float PI=3.14159265358979323846;
 
 We keep a constant of PI with an appropriate number of decimal places, which we'll use in different spots. 
 
+##### Moving thru space
 
     float speed=ofTime*1.5;
-    
-    float plane_x= cos(PI + speed*0.25);
-    float plane_y= -0.2;
-    float plane_z= 2+speed*0.5;
-    
+
+We define a speed by multiplying with the current time
+
+##### Let's figure out where we are...
+
+    float p_x= cos(PI + speed*0.25);
+    float p_y= -0.2;
+    float p_z= 2+speed*0.5;
+	
+
+Next, we define a point in space, that changes everyframe since we're using _speed_ as a variable.
+
     vec2 rotate(vec2 k,float t)
     {
         return vec2(cos(t)*k.x-sin(t)*k.y,sin(t)*k.x+cos(t)*k.y);
     }
-    
+
+This is a small utility function for rotating 2D vectors.
+
     float obj(vec3 p)
     {
         float ball_p=1.0;
@@ -219,16 +232,13 @@ We keep a constant of PI with an appropriate number of decimal places, which we'
         
         float hole_w=ball_p*(0.825);
         float hole=length(mod(p,ball_p)-ball_p*0.5)-hole_w;
-     
-        
-        
-        
-    //    return length(p)-ball_w;
         
         return max(-ball,hole);
         
     }
-    
+
+
+
     void main()
     {
         vec2 position=(gl_FragCoord.xy/ofResolution.xy);
@@ -240,7 +250,7 @@ We keep a constant of PI with an appropriate number of decimal places, which we'
         vp.xy=rotate(vp.xy,speed*0.5);	// rotate along z
         
     
-        vec3 ray=vec3(plane_x,plane_y,plane_z);
+        vec3 ray=vec3(p_x,py,p_z);
         
         float t=0.0;
         

@@ -11,9 +11,9 @@ const float PI=3.14159265358979323846;
 
 float speed=ofTime*1.5;
 
-float plane_x= cos(PI + speed*0.25);
-float plane_y= -0.2;
-float plane_z= 2+speed*0.5;
+float p_x= 2*cos(PI + speed*0.25);
+float p_y= -0.5;
+float p_z= 2+speed*0.5;
 
 vec2 rotate(vec2 k,float t)
 {
@@ -49,7 +49,7 @@ void main()
     vp.xy=rotate(vp.xy,speed*0.5);	// rotate along z
     
 
-    vec3 ray=vec3(plane_x,plane_y,plane_z);
+    vec3 ray=vec3(p_x,p_y,p_z);
     
     float t=0.0;
     
