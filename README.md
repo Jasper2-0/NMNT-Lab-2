@@ -174,19 +174,32 @@ Since OF doesn't use a Unified Shader Model, there are two shaders running, a Ve
 Our vertex shader takes care of changing the coordinates in 3D space, to 2D space, using the Model View Projection matrix. It outputs these to the fragment shader.
 
 #### Fragment (pixel) Shader 
-The fragment shaders operate on the actual pixels of the image. This is where we do our actual raymarching, and work with signed distance fields. 
+The fragment shaders operate on the actual pixels of the image. It's important to note that each fragment shaders operates in parralel on the pixels of the image.
 
-#####
+This is where we do our actual raymarching, and work with signed distance fields. Since this is where the main action happens in this project, I've chopped it into discrete elements that I'll discuss as we go along. 
+
+##### Setting up variables
 
     uniform float c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15;
     
     uniform float ofTime;
     uniform vec2 ofResolution;
     
+
+First we define the variables that we get from OF. Keep in mind that these are updated every frame. We get the control values from OSC (c0 thru c15), get the value of the ofTimer, and we store the resolution of the OF window in a 2D vector.
+
+
+##### setting an output
     out vec4 fragColor;
-    
+
+A fragmentshader always has to output a pixelcolor. This color is defined in a 4D vector, where the four dimensions map to a RGBA (32bit) pixel value. They range from 0 to 1 (in contrast to 0.255 that most people are familar with from web design), and an Alpha value, defining the transperacy of the pixel.
+
+
     const float PI=3.14159265358979323846;
-    
+
+We keep a constant of PI with an appropriate number of decimal places, which we'll use in different spots. 
+
+
     float speed=ofTime*1.5;
     
     float plane_x= cos(PI + speed*0.25);
