@@ -217,12 +217,16 @@ We define a speed by multiplying with the current time
 
 Next, we define a point in space, that changes everyframe since we're using _speed_ as a variable.
 
+##### A helper for 2D rotations
+
     vec2 rotate(vec2 k,float t)
     {
         return vec2(cos(t)*k.x-sin(t)*k.y,sin(t)*k.x+cos(t)*k.y);
     }
 
 This is a small utility function for rotating 2D vectors.
+
+##### The Magic
 
     float obj(vec3 p)
     {
@@ -237,7 +241,7 @@ This is a small utility function for rotating 2D vectors.
         
     }
 
-
+##### And our main loop
 
     void main()
     {
