@@ -7,6 +7,8 @@
     |     | -__| | | |   |   |  |  -__|  __||     |    |  _ ||  ||  _  |  _  |  |  |
     |_|___|____|_____|   |___|  |_____|____||__|__|_|__|____||__||_____|___  |___  |
                                                                        |_____|_____|
+    Leiden University 2016 // Peter van der Putten // Jeroen Oorschot
+
 
 # Lab 2 Openframeworks -- Experimenting with Signed Distance Fields
 
