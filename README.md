@@ -43,9 +43,12 @@ The main functions of the standard open frameworks apps that were used were setu
 
 
 The main setup functions takes care of the following housekeeping bits:
+
 - It sets up OF (receiver) for listening to OSC messages on its server
 - Sets the framerate to a snappy 60 frames a second
 - Loads the appropriate shader based on TARGET_OPENGLES (different GPU’s use different versions of OpenGL)
+
+
 
 Every update OF handles the incoming data via OSC:
 
