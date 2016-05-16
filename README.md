@@ -56,7 +56,7 @@ The main setup functions takes care of the following housekeeping bits:
 
 Every update OF handles the incoming data via OSC
 
-void ofApp::handleOSC() {
+    void ofApp::handleOSC() {
     ofxOscMessage m;
     receiver.getNextMessage(m);
     cout << m.getArgAsFloat(0) << "\n";
