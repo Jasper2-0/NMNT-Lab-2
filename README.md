@@ -256,6 +256,8 @@ This is a small utility function for rotating 2D vectors.
         
     }
 
+Here we define our 'scene'. We define spheres which we repeat using the mod() operation. We then subtract another sphere (with a smaller spacing) from the larger set of spheres, resulting in the final surface.
+
 ##### And our main loop
 
     void main()
