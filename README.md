@@ -57,24 +57,24 @@ The main setup functions takes care of the following housekeeping bits:
 Every update OF handles the incoming data via OSC
 
     void ofApp::handleOSC() {
-    ofxOscMessage m;
-    receiver.getNextMessage(m);
-    cout << m.getArgAsFloat(0) << "\n";
-    
-    /*
-     * Yes, I'm a aware that this is a ton of copy-paste. it gets the job done though ^_^
-     */
-    
-    if (m.getAddress() == "/midi/cc21/9") {
-        c0 = m.getArgAsFloat(0);
+        ofxOscMessage m;
+        receiver.getNextMessage(m);
+        cout << m.getArgAsFloat(0) << "\n";
+        
+        /*
+         * Yes, I'm a aware that this is a ton of copy-paste. it gets the job done though ^_^
+         */
+        
+        if (m.getAddress() == "/midi/cc21/9") {
+            c0 = m.getArgAsFloat(0);
+        }
+        
+…       
+        
+        if (m.getAddress() == "/midi/cc48/9") {
+            c15 = m.getArgAsFloat(0);
+        }
     }
-    
-…
-  
-    if (m.getAddress() == "/midi/cc48/9") {
-        c15 = m.getArgAsFloat(0);
-    }
-}
 
 handleOSC gets OSC messages from the OSC receiver and passes it along to the appropriate variable defined in OF. Quite some copy paste, but it gets the job done.
 
